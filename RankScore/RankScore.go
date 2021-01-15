@@ -1,7 +1,11 @@
 package RankScore
 
 import (
+	"bufio"
+	"io"
+	"os"
 	"strconv"
+	"strings"
 
 	"gonum.org/v1/gonum/floats"
 )
@@ -71,4 +75,77 @@ func MatchingGeneIndex(BL []string, SL []string) []int {
 	}
 
 	return matchIndex
+}
+
+// for reading file from disk with path
+func ReadFile(f *os.File) ([]string, [][]string) {
+	input := bufio.NewScanner(f)
+	var list []string
+	for input.Scan() {
+		list = append(list, input.Text())
+	}
+	var pathwayId = make([]string, len(list))
+	var geneList = make([][]string, len(list))
+
+	for i, v := range list {
+		res := strings.Split(v, "\t")
+
+		//pathwayId[i] = res[1]
+		pathwayId[i] = res[0]
+		geneList[i] = res[2:len(res)]
+	}
+	return pathwayId, geneList
+}
+
+//read uploaded file from mime/multipart
+func ReadPathwayFile(f io.Reader) (pid []string, glist [][]string) {
+	input := bufio.NewScanner(f)
+	var list []string
+	for input.Scan() {
+		list = append(list, input.Text())
+	}
+	var pathwayId = make([]string, len(list))
+	var geneList = make([][]string, len(list))
+
+	for i, v := range list {
+		res := strings.Split(v, "\t")
+
+		//pathwayId[i] = res[1]
+		pathwayId[i] = res[0]
+		geneList[i] = res[2:len(res)]
+	}
+	return pathwayId, geneList
+}
+
+// "GeneList Struct structure to store the genelist and pathway ids in struct"
+type GeneListStruct struct {
+	ID       string
+	GeneList []string
+}
+
+// "ReadPathwayFile2 function read pathway file and return slice of GeneListStruct type"
+func ReadPathwayFile2(f io.Reader) []GeneListStruct {
+	input := bufio.NewScanner(f)
+	var list []string
+	for input.Scan() {
+		list = append(list, input.Text())
+	}
+	//var pathwayId = make([]string, len(list))
+	//var geneList = make([][]string, len(list))
+
+	geneListStruct := make([]GeneListStruct, len(list))
+
+	for i, v := range list {
+		res := strings.Split(v, "\t")
+		var temp GeneListStruct
+		temp.ID = res[0]
+		temp.GeneList = res[2:len(res)]
+		geneListStruct[i] = temp
+
+		//pathwayId[i] = res[1]
+		//pathwayId[i] = res[0]
+		//geneList[i] = res[2:len(res)]
+
+	}
+	return geneListStruct
 }
