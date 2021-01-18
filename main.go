@@ -76,25 +76,18 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		row = append(row, line)
 
 	}
-	// first line is header nSample is len(row)-1
+
 	sampleNames := make([]string, len(row)-1)
 	for i := 0; i < len(sampleNames); i++ {
 		sampleNames[i] = row[i+1][0]
 	}
 
 	fmt.Println("sampleNames =>", sampleNames)
-	// sample 1 genelist and cpm val
-	//genes := row[0][1:len(row[0])]
 
-	//plenth := len(pid)
 	plenth := len(pid_glist)
 	//samplePathwayMatx := make([][]float32, plenth)
 
 	samplePathwayMatx := make([]ResScoresStruct, plenth)
-	//var samplePathwayMatx [][]float64
-	//fmt.Println(len(samplePathwayMatx))
-
-	//fmt.Println(len(glist))
 
 	for i := 0; i < plenth; i++ {
 		//nSample := len(sampleNames)
@@ -120,9 +113,6 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	//fresult, err := os.Create(os.Args[2])
-	//defer fresult.Close()
 
 	wRes := csv.NewWriter(targetFile)
 	defer wRes.Flush()

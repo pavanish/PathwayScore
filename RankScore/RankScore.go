@@ -123,6 +123,12 @@ type GeneListStruct struct {
 	GeneList []string
 }
 
+// ResScoresStruct stores results of rankScores
+type ResScoresStruct struct {
+	Id    string
+	score []float32
+}
+
 // "ReadPathwayFile2 function read pathway file and return slice of GeneListStruct type"
 func ReadPathwayFile2(f io.Reader) []GeneListStruct {
 	input := bufio.NewScanner(f)
@@ -149,3 +155,4 @@ func ReadPathwayFile2(f io.Reader) []GeneListStruct {
 	}
 	return geneListStruct
 }
+
