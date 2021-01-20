@@ -3,11 +3,11 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"sync"
 
 	"./RankScore"
@@ -17,18 +17,35 @@ var wg sync.WaitGroup
 
 func main() {
 
-	f, err := os.Open("/Users/pk/learn_stuff/GOlang/Les1/wikipathway.v7.2.symbols.gmt")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "dup2: %v\n", err)
+	expnMatrixFile := flag.String("filename", "provide filename with full path in double quotes", "input filename with full path")
+	pathwayDB := flag.String("Pathway", "wiki", "input pathway DB")
+	cpu := flag.Int("nCPU", 2, "provide --nCPU 4")
+	help := flag.Bool("help", false, "")
+	flag.Parse()
+	if *expnMatrixFile == "" {
+		fmt.Println("expn matrix filepath required")
+		os.Exit(1)
+	}
+	if *help == true {
+		fmt.Println("Usage::")
+		fmt.Println(`RankScoreClI --filename "/User/dir/filename.csv" --Pathway "wiki" --nCPU 4`)
+		return
+	}
+	var fname string
+	if *pathwayDB == "wiki" {
+		fname = "/Users/pk/learn_stuff/GOlang/Les1/wikipathway.v7.2.symbols.gmt"
+	} else {
+		fname = "/Users/pk/learn_stuff/GOlang/Les1/ReactomePathways.gmt"
 	}
 
-	//var pid,glist = RankScore.readFile(f)
+	f, err := os.Open(fname)
+	if err != nil {
+		log.Fatal("No file", err)
+	}
 	pid_glist := RankScore.ReadPathwayFile2(f)
 	f.Close()
 
-	//csvFile, _, err := r.FormFile("matxFile")
-	csvFile, _ := os.Open("/Users/pk/learn_stuff/GOlang/Les1/myo_cpm_rowsSample_colGene_presorted.csv")
-	//csvFile, _ := os.Open(matx)
+	csvFile, _ := os.Open(*expnMatrixFile)
 	reader := csv.NewReader(bufio.NewReader(csvFile))
 	// each row[0] value is sample name and subsequent values are gene expn values
 	var row [][]string
@@ -55,11 +72,7 @@ func main() {
 	pchan := make(chan RankScore.GeneListStruct)
 	reschan := make(chan ResScoresStruct)
 	var gr int
-	np := os.Args[1]
-	gr, err = strconv.Atoi(np)
-	if err != nil {
-		log.Fatal(err)
-	}
+	gr = *cpu
 
 	go passPathway(pchan, pid_glist)
 	wg.Add(gr)
@@ -116,6 +129,7 @@ func synPathway(out chan<- ResScoresStruct, in <-chan RankScore.GeneListStruct, 
 		fmt.Println("Processing:", v.ID)
 
 	}
+
 }
 
 //this function takes slice of gene_list struct and pass it to chan
