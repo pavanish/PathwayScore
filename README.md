@@ -20,6 +20,7 @@ by default software use max 2 cores but it can be reset with --nCPU parameter (e
         * $ ./parRankScore.go --filename "Project_data_expn_matrix.csv" --Pathway "wiki" --nCPU 6
     * ##### build and run at once
         * $ go run parRankScore.go --filename "Project_data_expn_matrix.csv" --Pathway "wiki" --nCPU 6
+    * #### parRankScore.go was removed 
 
 
 
