@@ -1,4 +1,4 @@
-FROM golang:1.16.5 as builder
+FROM golang:1.18 as builder
 # Define build env
 ENV GOOS linux
 ENV CGO_ENABLED 0
@@ -7,10 +7,11 @@ WORKDIR /app
 # Cache and install dependencies
 COPY go.mod go.sum ./
 RUN go mod download
+
 # Copy app files
 COPY . .
 # Build app
-RUN go build main.go -o app
+RUN go build -o app
 
 FROM alpine:3.14 as production
 # Add certificates

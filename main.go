@@ -11,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"./RankScore"
+	"PathwayScore/RankScore"
 )
 
 func main() {
